@@ -9,9 +9,9 @@ contents=$(jq --arg client "$1" --arg netmask "$2" '.instance_name_prefix=$clien
 
 echo "JQ DONE"
 
-ALL="$(base64 -i inventories/template/all.json | sed 's/ //g' )"
-CLIENT="$(base64 -i inventories/template/client.json | sed 's/ //g' )"
-HOST="$(base64 -i inventories/template/hosts | sed 's/ //g' )"
+ALL="$(base64 -w 0 -i inventories/template/all.json)"
+CLIENT="$(base64 -w 0 -i inventories/template/client.json)"
+HOST="$(base64 -w 0 -i inventories/template/hosts)"
 
 echo "BASE64 DONE"
 
