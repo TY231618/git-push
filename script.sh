@@ -27,11 +27,12 @@ echo "SPACEMAN"
 
 curl -L \
   -X PUT \
+  -vvv \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $3"\
   -H "X-GitHub-Api-Version: 2022-11-28" \
   https://api.github.com/repos/TY231618/git-push/contents/$1/all.yml \
-  -d '{\"message\":\"my commit message\",\"committer\":{\"name\":\"Tony\",\"email\":\"ayoung@and.digital\"},\"content\":\"$ALL\"}'
+  -d '{"message":"my commit message","committer":{"name":"Tony","email":"ayoung@and.digital"},"content":"$ALL"}'
 
 curl -L \
   -X PUT \
