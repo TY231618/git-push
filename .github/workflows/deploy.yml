@@ -63,5 +63,5 @@ jobs:
       - uses: sergeysova/jq-action@v2
       - name: Run script file
         run: |
-          script.sh github.event.inputs.name github.event.inputs.netmask github.event.inputs.token
+          script.sh ${{ github.event.inputs.name }} ${{ github.event.inputs.netmask }} ${{ github.event.inputs.token }}
         shell: bash
