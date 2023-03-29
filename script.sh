@@ -27,6 +27,7 @@ echo "SPACEMAN"
 
 curl -L \
   -X PUT \
+  -vvv \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $3"\
   -H "X-GitHub-Api-Version: 2022-11-28" \
