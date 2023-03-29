@@ -1,0 +1,7 @@
+{
+  "environment_name": "dev",
+  "instance_name_prefix": "burger",
+  "instance_vpc_prefix": "{{ client_key_prefix }}{{ instance_name_prefix }}",
+  "tooling_prefix": "openr-tooling",
+  "netmask": "12"
+}
