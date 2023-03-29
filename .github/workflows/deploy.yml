@@ -60,8 +60,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: sergeysova/jq-action@v2
+      # - uses: sergeysova/jq-action@v2
       - name: Run script file
         run: |
           bash script.sh ${{ github.event.inputs.name }} ${{ github.event.inputs.netmask }} ${{ github.event.inputs.token }}
-        shell: bash
+        # shell: bash
