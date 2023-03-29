@@ -9,6 +9,50 @@ on:
       netmask:
         required: true
         description: Netmask of CIDR block
+      token:
+        required: true
+        description: Token to run script
+
+# jobs:
+#   deploy:
+#     name: Trigger test
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name:
+#         uses: sergeysova/jq-action@v2
+#         with:
+#           cmd: contents="$(jq '.instance_name_prefix="${{ github.event.inputs.name }}" | .netmask="${{ github.event.inputs.netmask }}"' inventories/template/temp.json)" && echo -E "${contents}" > inventories/template/all.json
+#       - name: Base64 Encode Inventory Files for git push
+#         run: |
+#           ALL="$(base64 -i inventories/template/all.json)"
+#           CLIENT="$(base64 -i inventories/template/client.json)"
+#           HOST="$(base64 -i inventories/template/hosts)"
+#       - name: ECHO VARS
+#         run: |
+#           echo $ALL
+#           echo $CLIENT
+#           echo $HOST
+# - name: Install AWX cli
+#   run: |
+#     sudo apt-get update -y
+#     sudo apt install python3-pip -y
+#     pip3 install --user https://releases.ansible.com/ansible-tower/cli/ansible-tower-cli-latest.tar.gz
+# - name: Sync Project with latest code
+#   run: |
+#     awx projects update --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }} --wait
+# - name: Add Dedicated Inventory
+#   run: |
+#     awx inventory create --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }} --controller_host ${{ secrets.AWX_URL }} --controller_username ${{ secrets.AWX_USER }} --controller_password ${{ secrets.AWX_PASSWORD }} --name 'Tollies' --organization 'Openr'
+# - name: Add Dedicated Inventory Source
+#   run: |
+#     awx inventory_sources create --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }} --controller_host ${{ secrets.AWX_URL }} --controller_username ${{ secrets.AWX_USER }} --controller_password ${{ secrets.AWX_PASSWORD }} --name 'Tollies Dedicated Inventory' --inventory 'Tollies' --credential 13 --overwrite true --overwrite_vars true --update_on_launch true --organization 'Openr' --source 'scm' --source_path 'inventories/dedicated/tollies' --source_project 'Openr infrastructure'
+# - name: Sync Inventory source
+#   run: |
+#     awx inventory_sources update --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }} --wait
+# - name: Trigger Instance Playbook
+#   run: |
+#     awx job_templates launch 'openr-dev-instance-provisioning' --inventory 'Tollies' --monitor -f human --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }}
 
 jobs:
   deploy:
@@ -16,37 +60,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name:
-        uses: sergeysova/jq-action@v2
-        with:
-          cmd: contents="$(jq '.instance_name_prefix="${{ github.event.inputs.name }}" | .netmask="${{ github.event.inputs.netmask }}"' inventories/template/temp.json)" && echo -E "${contents}" > inventories/template/all.json
-      - name: Base64 Encode Inventory Files for git push
+      - uses: sergeysova/jq-action@v2
+      - name: Run script file
         run: |
-          ALL="$(base64 -i inventories/template/all.json)"
-          CLIENT="$(base64 -i inventories/template/client.json)"
-          HOST="$(base64 -i inventories/template/hosts)"
-      - name: ECHO VARS
-        run: |
-          echo $ALL
-          echo $CLIENT
-          echo $HOST
-      # - name: Install AWX cli
-      #   run: |
-      #     sudo apt-get update -y
-      #     sudo apt install python3-pip -y
-      #     pip3 install --user https://releases.ansible.com/ansible-tower/cli/ansible-tower-cli-latest.tar.gz
-      # - name: Sync Project with latest code
-      #   run: |
-      #     awx projects update --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }} --wait
-      # - name: Add Dedicated Inventory
-      #   run: |
-      #     awx inventory create --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }} --controller_host ${{ secrets.AWX_URL }} --controller_username ${{ secrets.AWX_USER }} --controller_password ${{ secrets.AWX_PASSWORD }} --name 'Tollies' --organization 'Openr'
-      # - name: Add Dedicated Inventory Source
-      #   run: |
-      #     awx inventory_sources create --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }} --controller_host ${{ secrets.AWX_URL }} --controller_username ${{ secrets.AWX_USER }} --controller_password ${{ secrets.AWX_PASSWORD }} --name 'Tollies Dedicated Inventory' --inventory 'Tollies' --credential 13 --overwrite true --overwrite_vars true --update_on_launch true --organization 'Openr' --source 'scm' --source_path 'inventories/dedicated/tollies' --source_project 'Openr infrastructure'
-      # - name: Sync Inventory source
-      #   run: |
-      #     awx inventory_sources update --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }} --wait
-      # - name: Trigger Instance Playbook
-      #   run: |
-      #     awx job_templates launch 'openr-dev-instance-provisioning' --inventory 'Tollies' --monitor -f human --conf.host ${{ secrets.AWX_URL }} --conf.username ${{ secrets.AWX_USER }} --conf.password ${{ secrets.AWX_PASSWORD }}
+          script.sh github.event.inputs.name github.event.inputs.netmask github.event.inputs.token
+        shell: bash
