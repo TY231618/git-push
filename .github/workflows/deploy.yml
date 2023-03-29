@@ -25,6 +25,7 @@ jobs:
           ALL="$(base64 -i inventories/template/all.json)"
           CLIENT="$(base64 -i inventories/template/client.json)"
           HOST="$(base64 -i inventories/template/hosts)"
+          echo $HOST
 
       # - name: Install AWX cli
       #   run: |
